@@ -1,0 +1,245 @@
+/* ========== Base / Reset ========== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0f172a;           /* slate-900 */
+  --panel: #111827;        /* gray-900 */
+  --muted: #94a3b8;        /* slate-400 */
+  --text: #e5e7eb;         /* gray-200 */
+  --brand: #6366f1;        /* indigo-500 */
+  --brand-2: #22c55e;      /* green-500 */
+  --danger: #ef4444;       /* red-500 */
+  --warning: #f59e0b;      /* amber-500 */
+  --border: #1f2937;       /* gray-800 */
+  --card: #0b1220;         /* deep panel */
+  --shadow: 0 10px 25px rgba(0,0,0,0.25);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: linear-gradient(180deg, #0b1020 0%, #0f172a 60%);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ========== Page Shell ========== */
+.internshipspage {
+  max-width: 1100px;
+  margin: 48px auto;
+  padding: 0 20px 60px;
+}
+
+.internshipspage h2 {
+  margin: 0 0 18px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.internshipspage .subtitle {
+  margin-top: -6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ========== Filters Bar ========== */
+.filters {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 0.9fr 0.7fr 0.7fr 0.8fr auto;
+  gap: 12px;
+  padding: 14px;
+  margin: 18px 0 26px;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.filters input[type="text"],
+.filters input[type="number"],
+.filters select {
+  width: 100%;
+  height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease, transform 0.04s ease;
+}
+
+.filters input::placeholder {
+  color: #76839d;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #334155; /* slate-700 */
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.filters button[type="submit"] {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #4f46e5;
+  background: linear-gradient(135deg, #4f46e5, #22c55e);
+  color: white;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+
+.filters button[type="submit"]:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+}
+
+.filters button[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+
+@media (min-width: 561px) {
+  .filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.loading,
+.error,
+.no-data {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  display: inline-block;
+  margin: 10px 0 20px;
+  font-size: 14px;
+}
+
+.error {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+  color: #fecaca;
+}
+
+/* ========== Cards Grid ========== */
+.internshipcards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 1100px) {
+  .internshipcards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .internshipcards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== Card ========== */
+.internshipcard {
+  background: radial-gradient(1200px 400px at 0% 0%, rgba(99,102,241,0.08), transparent 40%),
+              linear-gradient(180deg, rgba(17,24,39,0.85), rgba(11,18,32,0.9));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.12s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.internshipcard:hover {
+  transform: translateY(-3px);
+  border-color: #243142;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+}
+
+.internshipcard h3 {
+  margin: 6px 0 10px;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+}
+
+.internshipcard p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #d7dde9;
+}
+
+.internshipcard p b {
+  color: #cbd5e1; /* slate-300 */
+}
+
+.internshipcard .description {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #223047;
+  color: #c7cfdb;
+}
+
+/* ========== Badges (optional) ========== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #0e1525;
+  color: var(--text);
+}
+
+.badge--mode {
+  border-color: rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.badge--openings {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+/* ========== Utility ========== */
+.flex {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
