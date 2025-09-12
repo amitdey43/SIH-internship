@@ -1,13 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateInternship } from "./Createintership";
 import { Internships } from "./internships";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const Hrdashboard = function () {
   const [activeTab, setActiveTab] = useState("overview");
-    
-
   const [domains, setDomains] = useState([]);
   const [domainInput, setDomainInput] = useState("");
+  const [Hr,setHr]= useState("");
+  const [total,setTotal]= useState(0);
+  const [shortlisted,setShortlisted]= useState(0);
+  const [pending,setPending]= useState("");
+  const [rejected,setRejected]= useState("");
+  const [uh,setUh]= useState("");
+  let navigate= useNavigate();
+
+useEffect(() => {
+  axios.get("http://localhost:8000/app/hr/hrdetails", {
+    withCredentials: true,
+  })
+  .then((res) => {
+    setHr(res.data?.hr);
+    setTotal(res.data?.totalc);
+    setShortlisted(res.data?.shortlisted);
+    setPending(res.data?.pending);
+    setRejected(res.data?.rejected);
+    setUh(res.data?.uh);
+  })
+  .catch(() => {
+    alert("There is problem to fetch user details");
+  });
+}, []);
+
+// useEffect(() => {
+//   axios.get("http://localhost:8000/app/hr/getuserforhr", {
+//     withCredentials: true,
+//   })
+//   .then((res) => {
+//     setAppuser(res.data?.applyUsers);
+//   })
+//   .catch(() => {
+//     alert("There is problem to fetch user details");
+//   });
+// }, []);
+
 
   const handleAddDomain = (e) => {
     e.preventDefault();
@@ -64,7 +101,7 @@ export const Hrdashboard = function () {
       {/* Main */}
       <main className="main">
         {activeTab === "overview" && (
-                <div className="overview">
+            <div className="overview">
             <h2>📊 Overview</h2>
             <div className="cards">
                 <div className="card">
@@ -72,7 +109,7 @@ export const Hrdashboard = function () {
                     <span>Total Candidates</span>
                     <span className="icon">👥</span>
                 </div>
-                <h3>128</h3>
+                <h3>{total || "No entry yet"}</h3>
                 <div className="progress">
                     <div className="progress-bar" style={{ width: "100%" }}></div>
                 </div>
@@ -80,10 +117,10 @@ export const Hrdashboard = function () {
 
                 <div className="card">
                 <div className="card-header">
-                    <span>Selected</span>
+                    <span>Shortlisted</span>
                     <span className="icon">✅</span>
                 </div>
-                <h3>52</h3>
+                <h3>{shortlisted}</h3>
                 <div className="progress">
                     <div className="progress-bar" style={{ width: "40%" }}></div>
                 </div>
@@ -94,7 +131,7 @@ export const Hrdashboard = function () {
                     <span>Pending</span>
                     <span className="icon">⏳</span>
                 </div>
-                <h3>40</h3>
+                <h3>{pending}</h3>
                 <div className="progress">
                     <div className="progress-bar" style={{ width: "31%" }}></div>
                 </div>
@@ -105,7 +142,7 @@ export const Hrdashboard = function () {
                     <span>Rejected</span>
                     <span className="icon">❌</span>
                 </div>
-                <h3>36</h3>
+                <h3>{rejected}</h3>
                 <div className="progress">
                     <div className="progress-bar" style={{ width: "28%" }}></div>
                 </div>
@@ -127,21 +164,14 @@ export const Hrdashboard = function () {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Amit Kumar</td>
-                  <td>Frontend Intern</td>
-                  <td>✅ Selected</td>
-                </tr>
-                <tr>
-                  <td>Riya Sharma</td>
-                  <td>Backend Intern</td>
-                  <td>⏳ Pending</td>
-                </tr>
-                <tr>
-                  <td>Raj Verma</td>
-                  <td>HR Intern</td>
-                  <td>❌ Rejected</td>
-                </tr>
+                {uh?.map((intern,index)=>
+                  <tr key={index}>
+                    <td>{intern?.user?.name}</td>
+                    <td>{intern?.internship?.title}</td>
+                    <td>{intern?.status}</td>
+                    <td><button onClick={()=>navigate(`/user/details/${intern?.user?._id}/${intern?.internship?._id}`)}>See Details</button></td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -164,16 +194,19 @@ export const Hrdashboard = function () {
 
         {activeTab === "interviews" && (
           <div>
-            <h2>📅 Interviews</h2>
+            <h2>📅 Shortlisted Candidate</h2>
             <ul>
-              <li>Interview with Riya Sharma - Tomorrow 11:00 AM</li>
-              <li>Interview with Raj Verma - Sep 8, 2:30 PM</li>
+              {Hr?.shortlistedCandidates?.map((candidate,index)=>(
+                  <li key={index}>Shedule time for {candidate.name} 
+                    <button>Shedule Time</button>
+                  </li>
+              ))}
             </ul>
           </div>
         )}
 
         {activeTab === "internships" && (
-          <Internships/>
+          <Internships uh={uh} hr={Hr}/>
         )}
 
         {activeTab === "settings" && (

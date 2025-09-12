@@ -211,7 +211,7 @@ export const CreateInternship = () => {
         </div>
 
         <div className="form-group">
-          <label>Start Date</label>
+          <label>Application Start Date</label>
           <input
             type="date"
             name="startDate"
@@ -221,7 +221,7 @@ export const CreateInternship = () => {
         </div>
 
         <div className="form-group">
-          <label>End Date</label>
+          <label>Application End Date</label>
           <input
             type="date"
             name="endDate"

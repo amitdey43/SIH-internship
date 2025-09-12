@@ -74,11 +74,15 @@ const internshipSchema = new mongoose.Schema({
       message: "End date must be after start date",
     },
   },
+  userApplied:[{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  }],
   description: {
     type: String,
     required: [true, "Description is required"],
     trim: true,
-    maxlength: [1000, "Description can't exceed 1000 characters"],
+    // maxlength: [1000, "Description can't exceed 1000 characters"],
   },
   createdAt: {
     type: Date,

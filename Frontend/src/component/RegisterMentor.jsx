@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterMentor = function(){
     let [formData, setFormData]= useState({
@@ -15,6 +16,7 @@ export const RegisterMentor = function(){
         linkedIn:"",
         bio:"",
     })
+    let navigate = useNavigate();
     let [expertiseInput,setExpertiseInput]= useState("");
     let [error,setError]= useState("");
     let handleSubmit= (e)=>{
@@ -50,6 +52,7 @@ export const RegisterMentor = function(){
             //     linkedIn:"",
             //     bio:"",
             // });
+            navigate("/mentor/dashboard")
         }).catch((err)=>{
             setError(err.respose?.data|| "something went wrong")
             alert(err.respose?.data?.message);

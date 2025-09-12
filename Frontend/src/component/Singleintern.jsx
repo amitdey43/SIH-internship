@@ -464,24 +464,27 @@ const InternshipDetails = ({ internship = sampleInternship }) => {
             </div>
           </section>
 
-          <div className="button-group">
-            {user.appliedInterships?.map(app => app.internship.toString()).includes(formdata._id) ? (
-              <button className="action-button">Already applied</button>
-            ) : (
-              <button
-                onClick={() => navigate(`/internship/apply/${formdata._id}`)}
-                className="action-button"
-              >
-                Apply Now
+           {user.role==="Student"?( 
+            <div className="button-group">
+              
+              {user.appliedInterships?.map(app => app.internship.toString()).includes(formdata._id) ? (
+                <button className="action-button">Already applied</button>
+              ) : (
+                <button
+                  onClick={() => navigate(`/internship/apply/${formdata._id}`)}
+                  className="action-button"
+                >
+                  Apply Now
+                </button>
+              )}
+
+
+              
+              <button onClick={generateInterviewQuestions} disabled={isLoading} className="action-button">
+                Practice Questions
               </button>
-            )}
-
-
-            
-            <button onClick={generateInterviewQuestions} disabled={isLoading} className="action-button">
-              Practice Questions
-            </button>
-          </div>
+            </div>
+            ):""}   
           
           {isLoading && (
             <div className="ai-output-section">

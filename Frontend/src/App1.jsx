@@ -15,6 +15,10 @@ import { Home } from "./component/Home";
 import { InternshipsList } from "./component/Internshipdashboard";
 import InternshipDetails from "./component/Singleintern";
 import Internapply from "./component/Internapply";
+import UserProfileForHR from "./component/Getuserforhr";
+import { Editinternship } from "./Editinternship";
+import { Seementor } from "./component/Seementor";
+
 
 
 
@@ -22,7 +26,6 @@ function App1() {
   return (
     <Router>
       <Routes>
-
         <Route path="/" element={<Home />} />
         <Route path="/user/register" element={<App />} />
         <Route path="/mentor/register" element={<RegisterMentor/>}/>
@@ -38,6 +41,9 @@ function App1() {
         <Route path="/internships" element={<InternshipsList/>}/>
         <Route path="/intership/details/:id" element={<InternshipDetails/>}/>
         <Route path="/internship/apply/:id" element={<Internapply/>}/>
+        <Route path="/user/details/:id/:internid" element={<UserProfileForHR/>}/>
+        <Route path="/edit/:internid" element={<Editinternship/>}/>
+        <Route path="/seementor" element={<Seementor/>}/>
       </Routes>
     </Router>
   );

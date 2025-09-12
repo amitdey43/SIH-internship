@@ -61,7 +61,7 @@ let mentorSchema = new mongoose.Schema({
     assignedStudents: [
         { 
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Student"
+            ref: "User"
         }
     ],
     role: { 
@@ -69,6 +69,12 @@ let mentorSchema = new mongoose.Schema({
         default: "Mentor",
         enum: ["Student","Mentor","HR"]
     },
+    activechat:[ 
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
     resetPasswordToken:String,
     resetPasswordExpire:Date
 ,},{timestamps:true})

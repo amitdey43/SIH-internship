@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterHR = function() {
     const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ export const RegisterHR = function() {
         industryType: "",
         officeLocation: "",
     });
-
+    let navigate= useNavigate();
     const [error, setError] = useState("");
 
     const handleSubmit = (e) => {
@@ -41,6 +42,7 @@ export const RegisterHR = function() {
                 officeLocation: "",
             });
             setError(""); // Clear previous errors
+            navigate("/hr/dashboard")
         })
         .catch((err) => {
             const msg = err.response?.data?.message || err.response?.data || "Something went wrong";

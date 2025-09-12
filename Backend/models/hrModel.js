@@ -17,7 +17,7 @@ let hrSchema= new mongoose.Schema({
         trim:true,
         lowercase:true,
         validate: [validator.isEmail, "please enter valid email"],
-        unique: true
+        unique: true 
     },
     password:{
         type: String,
@@ -57,7 +57,13 @@ let hrSchema= new mongoose.Schema({
     shortlistedCandidates: [
         { 
             type: mongoose.Schema.Types.ObjectId, 
-            ref: "Student" 
+            ref: "User" 
+        }
+    ],
+    approvedCandidates: [
+        { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User" 
         }
     ],
     role: { 

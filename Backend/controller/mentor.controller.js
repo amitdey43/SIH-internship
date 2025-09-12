@@ -5,6 +5,8 @@ import ApiError from "../utilis/ApiError.js";
 import { sendMAil } from "../utilis/sendMail.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken"
+import { userModel } from "../models/userModel.js";
+import { muModel } from "../models/mentorUser.js";
 
 export const createMentor= asyncHandler(async(req,res,next)=>{
     let body= {...req.body};
@@ -28,7 +30,7 @@ export const createMentor= asyncHandler(async(req,res,next)=>{
     });
 
     sendToken(mentor,201,res);
-})
+})  
 export const loginMentor = asyncHandler(async(req,res,next)=>{
   let {email,password}= req.body;
   let mentor= await mentorModel.findOne({email}).select("+password");
@@ -112,5 +114,17 @@ export const avaToken = asyncHandler(async(req,res,next)=>{
   res.status(200).json({
     token,
     role
+  })
+})
+
+export const sendMentor = asyncHandler(async(req,res,next)=>{
+  let mentor = await mentorModel.findById(req.user._id);
+  let users= await userModel.find({mentorAssigned:req.user._id});
+  let mu= await muModel.find({mentor:req.user._id}).populate("user");
+  res.status(200).json({
+    success:true,
+    mentor,
+    users,
+    mu
   })
 })

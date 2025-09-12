@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import axios from "axios";
 import { Project } from "./component/project";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ function App() {
     portfolio: "",
     prefferedDomain: [],
   });
-
+  let navigate= useNavigate();
   const [data, setData] = useState({
     projects: [
       {
@@ -93,6 +94,7 @@ function App() {
             },
           ],
         })
+        navigate("/user/dashboard")
       })
       .catch((err) => {
         console.log(err.response?.data || "Something went wrong");

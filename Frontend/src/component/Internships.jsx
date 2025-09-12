@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export const Internships = () => {
+export const Internships = ({uh,Hr}) => {
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
+  let navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -15,6 +17,21 @@ export const Internships = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  // let deleteinternship = (internid)=>{
+  //   useEffect(()=>{
+  //     axios.put(`http://localhost:8000/app/hr/delete-internships/${internid}`,{
+  //       uh,
+  //       Hr,
+  //       internships
+  //     },{
+  //       withCredentials: true
+  //     }).then((res)=>{
+  //       alert("Delete succussfully");
+  //     }).catch((err)=>{
+  //       alert("There is problem to delete");
+  //     })
+  //   },[])
+  // }
   if (loading) return <p className="loading">⏳ Loading internships...</p>;
 
   return (
@@ -39,7 +56,7 @@ export const Internships = () => {
               <p className="description">{intern.description}</p>
 
               <div className="card-actions">
-                <button className="edit-btn">✏️ Edit</button>
+                <button className="edit-btn" onClick={()=> navigate(`/edit/${intern._id}`)}>✏️ Edit</button>
                 <button className="delete-btn">🗑️ Delete</button>
               </div>
             </div>

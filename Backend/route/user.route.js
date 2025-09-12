@@ -1,5 +1,5 @@
 import express from "express";
-import {  allInternships, applyInternship, createUser, finalApply, forgotUserPasword, loginUser, resetForgotPassword, sendUser, viewEachInternship } from "../controller/user.controller.js";
+import {  addMentor, allInternships, applyInternship, avaMentor, createUser, finalApply, forgotUserPasword, loginUser, logoutUser, resetForgotPassword, sendUser, updateProfile, viewEachInternship } from "../controller/user.controller.js";
 import { upload } from "../utilis/coludinary.js";
 import { IsLoggedin } from "../middleware/isLoggedin.js";
 let router= express.Router();
@@ -24,4 +24,15 @@ router.route("/finalapply").post(
 );
 router.route("/dashboard").get(IsLoggedin,sendUser);
 
+router.route("/updateProfile/:id").post(
+  IsLoggedin,
+  upload.fields([
+    { name: "profilePic", maxCount: 1 },
+    { name: "resume", maxCount: 1 }
+  ]),
+  updateProfile
+);
+router.route("/logout").get(logoutUser);
+router.route("/seementor").get(IsLoggedin,avaMentor);
+router.route("/addmentor").post(IsLoggedin,addMentor);
 export default router

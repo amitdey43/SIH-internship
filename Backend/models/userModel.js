@@ -12,7 +12,7 @@ const appliedInternshipSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "shortlisted", "rejected", "accepted"], // your choices
+    enum: ["pending", "shortlisted", "rejected", "accepted"], 
     default: "pending"
   }
 });

@@ -6,6 +6,9 @@ import { sendMAil } from "../utilis/sendMail.js";
 import crypto from "crypto"
 import { internshipModel } from "../models/internShip.js";
 import { ApiFunction } from "../utilis/ApiFunction.js";
+import { uhModel } from "../models/uhModel.js";
+import { mentorModel } from "../models/mentorModel.js";
+import { muModel } from "../models/mentorUser.js";
 
 export const createUser = asyncHandler(async (req, res, next) => {
   let body ={ ...req.body };
@@ -190,6 +193,13 @@ export const finalApply = asyncHandler(async(req,res,next)=>{
     $push: { appliedInterships: { internship: productid } },
   };
 
+  let p= await internshipModel.findById(productid);
+
+  await uhModel.create({
+    user:userid,
+    internship:productid,
+    hr:p.createdBy,
+  })
 
 if (req.files?.resume?.[0]?.path) {
   updateData.resume = req.files.resume[0].path;
@@ -208,7 +218,7 @@ let user = await userModel.findOneAndUpdate(
 
   await internshipModel.findByIdAndUpdate(
     productid,
-    { $inc: { numberOfOpenings: -1 } },  
+    { $push: { userApplied: userid } },  
     { new: true }
   );
 
@@ -225,5 +235,107 @@ let user = await userModel.findById(req.user._id).populate("appliedInterships.in
   res.status(200).json({
     success:true,
     user,
+  })
+})
+
+export const updateProfile= asyncHandler(async(req,res,next)=>{
+    let body ={ ...req.body };
+    let {id}= req.params;
+    console.log(id);
+    
+
+    if (body.skills && typeof body.skills=== "string") {
+      try {
+        body.skills = JSON.parse(body.skills);
+      } catch {
+        body.skills = body.skills.split(",").map((s) => s.trim());
+      }
+    }
+
+    if (body.prefferedDomain && typeof body.prefferedDomain === "string") {
+      try {
+        body.prefferedDomain = JSON.parse(body.prefferedDomain);
+      } catch {
+        body.prefferedDomain = body.prefferedDomain.split(",").map((d) => d.trim());
+      }
+    }
+
+    if (body.projects && typeof body.projects === "string") {
+      try {
+        body.projects = JSON.parse(body.projects);
+      } catch {
+        body.projects = [];
+      }
+    }
+
+    let updateData = {
+      ...body,
+    };
+
+
+  if (req.files?.resume?.[0]?.path) {
+    updateData.resume = req.files.resume[0].path;
+  }
+
+
+  if (req.files?.profilePic?.[0]?.path) {
+    updateData.profilePic = req.files.profilePic[0].path;
+  }
+
+  let user = await userModel.findOneAndUpdate(
+    { _id: id },
+    updateData,
+    { new: true }
+  );
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+})
+
+export const logoutUser = asyncHandler(async (req, res, next) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
+
+
+export const avaMentor = asyncHandler(async(req,res,next)=>{
+  let mentors= await mentorModel.find();
+  let user = await userModel.findById(req.user._id);
+  res.status(200).json({
+    success:true,
+    mentors,
+    user
+  })
+})
+
+export const addMentor= asyncHandler(async(req,res,next)=>{
+  let {mentorid,userid}= req.body;
+  let mentor = await mentorModel.findById(mentorid);
+  mentor.assignedStudents.push(userid);
+  await mentor.save({validateBeforeSave:false});
+  let user = await userModel.findById(userid);
+  user.mentorAssigned= mentorid;
+  await user.save({validateBeforeSave:false});
+  
+  let m=await muModel.create({
+    user:userid,
+    mentor:mentorid,
+  })
+  res.status(200).json({
+    success:true,
+    mentor,
+    user
   })
 })

@@ -5,6 +5,8 @@ import ApiError from "../utilis/ApiError.js";
 import { sendMAil } from "../utilis/sendMail.js";
 import crypto from "crypto"
 import { internshipModel } from "../models/internShip.js";
+import { uhModel } from "../models/uhModel.js";
+import { userModel } from "../models/userModel.js";
 
 export const hrCreate= asyncHandler(async(req,res,next)=>{
     const existing = await hrModel.findOne({email:req.body.email});
@@ -92,8 +94,8 @@ export const createInternship = asyncHandler(async(req,res,next)=>{
     req.body.companyname= req.user.companyName;
     let internShip= await internshipModel.create(req.body);
     let hr= await hrModel.findById(req.user.id);
-    hr.internshipsPosted=internShip._id;
-    hr.save({validateBeforeSave:false});
+    hr.internshipsPosted.push(internShip._id);
+    await hr.save({validateBeforeSave:false});
     res.status(201).json({
       success: true,
       message: "Internship created successfully",
@@ -108,3 +110,177 @@ export const getInternship= asyncHandler(async(req,res,next)=>{
       internships
     })
 })
+
+export const sendHr= asyncHandler(async(req,res,next)=>{
+    let hr= await hrModel.findById(req.user._id).populate("shortlistedCandidates");
+    let uh= await uhModel.find({hr:req.user._id}).populate("user").populate("hr").populate("internship");
+    let totalc= uh.length;
+    let shortlisted= 0,pending=0,rejected=0;
+    uh.forEach((intern)=>{
+      if(intern.status==="shortlisted"){
+        shortlisted+=1;
+      }
+      if(intern.status==="pending"){
+        pending+=1;
+      }
+      if(intern.status==="rejected"){
+        rejected+=1;
+      }
+    })
+    console.log("helloooo");
+    
+    res.status(200).json({
+      success:true,
+      hr,
+      uh,
+      totalc,
+      shortlisted,
+      pending,
+      rejected
+    })
+})
+
+export const getUserForHr =asyncHandler(async(req,res,next)=>{
+    let {id,internid}= req.params;
+    console.log(id);
+    console.log("hello");
+    
+    let internship= await internshipModel.findById(internid);
+    let user= await userModel.findById(id);
+    let uh= await uhModel.findOne({
+      user:id,
+      hr:req.user._id,
+      internship:internid,
+    })
+    res.status(200).json({
+      success:true,
+      user,
+      internship,
+      uh,
+    })
+})
+
+export const userShortlisted = asyncHandler(async (req, res, next) => {
+  let { userid, internid } = req.params;
+  let hrid = req.user._id;
+
+  let uh = await uhModel.findOne({
+    user: userid,
+    hr: hrid,
+    internship: internid,
+  });
+
+  if (!uh) {
+    return res.status(404).json({ message: "Application not found" });
+  }
+
+  uh.status = "shortlisted";
+  await uh.save({ validateBeforeSave: false });
+
+  let user = await userModel.findById(userid);
+  let hr= await hrModel.findByIdAndUpdate(hrid,{
+    $push: {shortlistedCandidates:userid}
+  },{new:true})
+
+  let updated = false;
+  user.appliedInterships.forEach((intern) => {
+    if (intern.internship.toString() === internid.toString()) {
+      intern.status = "shortlisted";
+      updated = true;
+    }
+  });
+
+  if (updated) {
+    await user.save({ validateBeforeSave: false });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User shortlisted successfully",
+  });
+});
+
+export const userRejected= asyncHandler(async(req,res,next)=>{
+  let { userid, internid } = req.params;
+  let hrid = req.user._id;
+
+  let uh = await uhModel.findOne({
+    user: userid,
+    hr: hrid,
+    internship: internid,
+  });
+
+  if (!uh) {
+    return res.status(404).json({ message: "Application not found" });
+  }
+
+  uh.status = "rejected";
+  await uh.save({ validateBeforeSave: false });
+
+  let user = await userModel.findById(userid);
+
+  let updated = false;
+  user.appliedInterships.forEach((intern) => {
+    if (intern.internship.toString() === internid.toString()) {
+      intern.status = "rejected";
+      updated = true;
+    }
+  });
+
+  if (updated) {
+    await user.save({ validateBeforeSave: false });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User rejected successfully",
+  });
+})
+
+// export const internDelete= asyncHandler(async(req,res,next)=>{
+//   let {uh,Hr,internships}= req.body;
+//   let {internid} = req.params;
+//   await uhModel.findOneAndDelete({
+//     internship: internid,
+//     hr: req.user._id,
+
+//   })
+export const getInterndatatoedit= asyncHandler(async(req,res,next)=>{
+  let {internid}= req.params;
+  let internship = await internshipModel.findById(internid);
+  if(!internship){
+    return next(new ApiError(404,"Internship data not avaliable"))
+  }
+  res.status(200).json({
+    success:true,
+    internship
+  })
+})
+  
+export const updateInternship= asyncHandler(async(req,res,next)=>{
+  let {internid}= req.params;
+  let formData= req.body;
+  let internship;
+  try{
+    internship= await internshipModel.findByIdAndUpdate(internid,formData,{new:true});
+  }catch(err){
+    return next(new ApiError(404,err.message))
+  }
+  res.status(200).json({
+    success:true,
+    internship
+  })
+})
+// })
+// export const getUsersForHr = asyncHandler(async(req,res,next)=>{
+//   let internships = await internshipModel.find({createdBy:req.user._id}).populate("userApplied.internship");
+//   let applyUsers= [];
+//   internships.forEach((intern)=>{
+//     applyUsers.push(...intern.userApplied);
+//   })
+  
+//   res.status(200).json({
+//     success:true,
+//     applyUsers
+//   })
+// })

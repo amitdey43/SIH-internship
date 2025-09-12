@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Project1 } from './Project1';
 
 
 const GlobalStyles = () => (
@@ -259,7 +260,7 @@ const DashboardPage = ({user,setUser}) => {
             <h2>My Applications</h2>
             <ul className="application-list">
                 {user?.appliedInterships?.map((intern)=>(
-                    <li>
+                    <li key={intern.internship._id}>
                         <div>
                             <p style={{fontWeight: '600'}}>{intern.internship.title}</p>
                             <p style={{color: 'var(--gray-500)', fontSize: '0.875rem'}}>{intern.internship.companyname || "TATA Steal"}</p>
@@ -293,11 +294,11 @@ const MyApplicationsPage = ({user,setUser}) => {
             <tbody>
                 {user?.appliedInterships?.map((intern)=>(
                    
-                <tr>
+                <tr key={intern.internship._id}>
                     <td>{intern.internship.title}</td>
                     <td>{intern.internship.companyname || "TATA Steal"}</td>
                     <td><span className="status pending">{intern.status}</span></td>
-                    <button onClick={()=>navigate(`/intership/details/${intern.internship._id}`)} >View details</button>
+                    <td><button onClick={()=>navigate(`/intership/details/${intern.internship._id}`)} >View details</button></td>
                 </tr>
                 ))}
              
@@ -306,45 +307,214 @@ const MyApplicationsPage = ({user,setUser}) => {
     </div>);
 };
 
-const ProfilePage = () => (
+const ProfilePage = () => {
+  const [formData, setFormData] = useState({});
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/app/user/dashboard", { withCredentials: true })
+      .then((res) => {
+        setFormData(res.data?.user || {});
+        setProjects(res.data?.user?.projects || []);
+      })
+      .catch(() => alert("Unable to fetch user profile"));
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    form.append("name", formData.name);
+    form.append("phone", formData.phone);
+    form.append("university", formData.university);
+    form.append("degree", formData.degree);
+    form.append("branch", formData.branch);
+    form.append("yearOfStudy", formData.yearOfStudy);
+    form.append("cgpa", formData.cgpa);
+    form.append("linkedIn", formData.linkedIn);
+    form.append("github", formData.github);
+    form.append("portfolio", formData.portfolio);
+
+    form.append("skills", JSON.stringify(formData.skills || []));
+    form.append("prefferedDomain", JSON.stringify(formData.prefferedDomain || []));
+    form.append("projects", JSON.stringify(projects));
+
+    const profilePicFile = document.querySelector("#profile").files[0];
+    const resumeFile = document.querySelector("#resume").files[0];
+    if (resumeFile) form.append("resume", resumeFile);
+    if (profilePicFile) form.append("profilePic", profilePicFile);
+
+    axios
+      .post(`http://localhost:8000/app/user/updateProfile/${formData._id}`, form, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      })
+      .then((res) => {alert(res.data?.message);
+        console.log(res.data?.user);
+        
+      })
+      .catch(() => alert("Error updating profile"));
+  };
+
+  return (
     <>
-        <div className="dashboard-section">
-            <h2>Personal Information</h2>
-            <form className="form-grid">
-                <div className="form-group">
-                    <label htmlFor="fullName">Full Name</label>
-                    <input type="text" id="fullName" defaultValue="Jane Doe" />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email Address</label>
-                    <input type="email" id="email" defaultValue="jane.doe@example.com" />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="phone">Phone Number</label>
-                    <input type="tel" id="phone" defaultValue="+1 234 567 890" />
-                </div>
-                 <div className="form-group">
-                    <label htmlFor="location">Location</label>
-                    <input type="text" id="location" defaultValue="San Francisco, CA" />
-                </div>
-            </form>
-        </div>
-        <div className="dashboard-section">
-            <h2>Resume & Skills</h2>
-             <div className="form-group">
-                <label htmlFor="resume">Your Resume</label>
-                <input type="file" id="resume" />
-            </div>
-             <div className="form-group" style={{marginTop: '1.5rem'}}>
-                <label htmlFor="skills">Skills (comma separated)</label>
-                <textarea id="skills" rows="3" defaultValue="React, JavaScript, Node.js, Figma, Product Management"></textarea>
-            </div>
-        </div>
-        <div className="form-actions">
-            <button className="btn-primary">Save Changes</button>
-        </div>
+      <div className="dashboard-section">
+        <h2>Edit Profile</h2>
+        <form className="form-grid" onSubmit={handleSubmit}>
+          {/* Personal Info */}
+          <div className="form-group">
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Phone</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Education */}
+          <div className="form-group">
+            <label>University</label>
+            <input
+              type="text"
+              name="university"
+              value={formData.university || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Degree</label>
+            <input
+              type="text"
+              name="degree"
+              value={formData.degree || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Branch</label>
+            <input
+              type="text"
+              name="branch"
+              value={formData.branch || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Year of Study</label>
+            <input
+              type="number"
+              name="yearOfStudy"
+              value={formData.yearOfStudy || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>CGPA</label>
+            <input
+              type="number"
+              name="cgpa"
+              value={formData.cgpa || ""}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* Skills & Projects */}
+          <div className="form-group">
+            <label>Skills</label>
+            <input
+              type="text"
+              name="skills"
+              value={(formData.skills || []).join(", ")}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  skills: e.target.value.split(",").map((s) => s.trim()),
+                })
+              }
+            />
+          </div>
+          <Project1 projects={projects} setProjects={setProjects} />
+
+          {/* Uploads */}
+          <div className="form-group">
+            <label>Change Profile Picture</label>
+            <input type="file" name="profilePic" id="profile" />
+          </div>
+          <div className="form-group">
+            <label>Change Resume (in jpg, jpeg, png, webp format only)</label>
+            <input type="file" name="resume" id="resume"/>
+          </div>
+
+          {/* Social Links */}
+          <div className="form-group">
+            <label>LinkedIn</label>
+            <input
+              type="text"
+              name="linkedIn"
+              value={formData.linkedIn || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>GitHub</label>
+            <input
+              type="text"
+              name="github"
+              value={formData.github || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Portfolio</label>
+            <input
+              type="text"
+              name="portfolio"
+              value={formData.portfolio || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label>Preferred Domains</label>
+            <input
+              type="text"
+              name="prefferedDomain"
+              value={(formData.prefferedDomain || []).join(", ")}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  prefferedDomain: e.target.value.split(",").map((d) => d.trim()),
+                })
+              }
+            />
+          </div>
+
+          <div className="form-actions">
+            <button className="btn-primary" type="submit">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
     </>
-);
+  );
+};
+
 
 const SettingsPage = () => (
     <div className="dashboard-section">
@@ -386,7 +556,7 @@ const SettingsPage = () => (
 export const Userdashboard=  function() {
     const [activePage, setActivePage] = useState('dashboard');
     let [user,setUser]= useState("");
-
+    let navigate = useNavigate();
     useEffect(()=>{
         axios.get("http://localhost:8000/app/user/dashboard",{
             withCredentials:true
@@ -395,6 +565,19 @@ export const Userdashboard=  function() {
             alert("There is problem to fetch user data");
         })
     },[])
+
+    let logout= function(){
+
+        axios.get("http://localhost:8000/app/user/logout",{
+            withCredentials:true
+        }).then((res)=>{alert(res.data?.message);
+            navigate("/");
+        })
+        .catch(()=>{
+            alert("There is problem to logout");
+        })
+    }
+    
 
     const renderPage = () => {
         switch (activePage) {
@@ -426,7 +609,14 @@ export const Userdashboard=  function() {
                         <button onClick={() => setActivePage('settings')} className={activePage === 'settings' ? 'active' : ''}><SettingsIcon /><span>Settings</span></button>
                     </nav>
                     <div className="sidebar-footer">
-                       <button>Log Out</button>
+                       <button onClick={()=>navigate("/seementor")}>See Mentors</button>
+                    </div>
+                    <div className="sidebar-footer">
+                       <button onClick={()=>navigate("/")}>Home Page</button>
+                    </div>
+                    <br></br>
+                    <div className="sidebar-footer">
+                       <button onClick={logout}>Log Out</button>
                     </div>
                 </aside>
                 <main className="dashboard-main">
