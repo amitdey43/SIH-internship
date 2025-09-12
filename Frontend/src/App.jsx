@@ -1,9 +1,17 @@
-import { useState } from "react";
-import "./App.css";
+"use client";
+import React, { useState } from "react";
 import axios from "axios";
+import { Label } from "./component/ui/input";
+import { Input } from "./component/ui/input";
+import { cn } from "./lib/utils";
+import {
+  IconBrandGithub,
+  IconBrandGoogle,
+  IconBrandOnlyfans,
+} from "@tabler/icons-react";
 import { Project } from "./component/project";
 
-function App() {
+export default function RegisterForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,36 +31,22 @@ function App() {
   });
 
   const [data, setData] = useState({
-    projects: [
-      {
-        title: "",
-        description: "",
-        technologies: "",
-        link: "",
-      },
-    ],
+    projects: [{ title: "", description: "", technologies: "", link: "" }],
   });
 
-  let [error, setError] = useState("");
+  const [error, setError] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     const form = new FormData();
-    form.append("name", formData.name);
-    form.append("email", formData.email);
-    form.append("password", formData.password);
-    form.append("phone", formData.phone);
-    form.append("university", formData.university);
-    form.append("degree", formData.degree);
-    form.append("branch", formData.branch);
-    form.append("yearOfStudy", formData.yearOfStudy);
-    form.append("cgpa", formData.cgpa);
-    form.append("linkedIn", formData.linkedIn);
-    form.append("github", formData.github);
-    form.append("portfolio", formData.portfolio);
-
-    form.append("skills", JSON.stringify(formData.skills));
-    form.append("prefferedDomain", JSON.stringify(formData.prefferedDomain));
+    Object.entries(formData).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        form.append(key, JSON.stringify(value));
+      } else {
+        form.append(key, value);
+      }
+    });
     form.append("projects", JSON.stringify(data.projects));
 
     const profilePicFile = document.querySelector("#profile").files[0];
@@ -67,7 +61,10 @@ function App() {
       })
       .then((res) => {
         console.log("Registered:", res.data);
-        setFormData({ name: "",
+        alert("Registration Successful!");
+
+        setFormData({
+          name: "",
           email: "",
           password: "",
           phone: "",
@@ -85,249 +82,265 @@ function App() {
         });
         setData({
           projects: [
-            {
-              title: "",
-              description: "",
-              technologies: "",
-              link: "",
-            },
+            { title: "", description: "", technologies: "", link: "" },
           ],
-        })
+        });
       })
       .catch((err) => {
         console.log(err.response?.data || "Something went wrong");
         setError(err.response?.data || "Something went wrong");
-         if (err.response?.data?.keyValues) {
-          alert(
-            "Error fields: " + Object.keys(err.response.data.keyValues).join(", ")
-          );
-        } else {
-          alert("Something went wrong");
-        }
-        setFormData({ name: "",
-          email: "",
-          password: "",
-          phone: "",
-          university: "",
-          degree: "",
-          branch: "",
-          yearOfStudy: "",
-          cgpa: "",
-          skills: [],
-          projects: [],
-          linkedIn: "",
-          github: "",
-          portfolio: "",
-          prefferedDomain: [],
-        });
-        setData({
-          projects: [
-            {
-              title: "",
-              description: "",
-              technologies: "",
-              link: "",
-            },
-          ],
-        })
       });
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <>
+    <div className="shadow-input mx-auto w-full max-w-2xl rounded-none bg-white p-6 md:rounded-2xl md:p-10 dark:bg-black">
+      <h2 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
+        Register Your Profile
+      </h2>
+      <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+        Fill out the form to create your account
+      </p>
 
+      <form className="my-8 space-y-6" onSubmit={handleSubmit}>
+        {/* Personal Info */}
+        <LabelInputContainer>
+          <Label htmlFor="name">Full Name</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="name"
+            name="name"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </LabelInputContainer>
 
-<form onSubmit={handleSubmit} className="userform">
-  <h2 className="form-title">Register Your Profile</h2>
+        <LabelInputContainer>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </LabelInputContainer>
 
-  {/* Personal Info */}
-  <div className="form-section">
-    <h3>Personal Information</h3>
+        <LabelInputContainer>
+          <Label htmlFor="password">Password</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </LabelInputContainer>
 
-    <label>Full Name</label>
-    <input
-      type="text"
-      name="name"
-      placeholder="Enter your full name"
-      value={formData.name}
-      onChange={handleChange}
-    />
+        <LabelInputContainer>
+          <Label htmlFor="phone">Phone Number</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="phone"
+            name="phone"
+            placeholder="Enter phone number"
+            value={formData.phone}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>Email</label>
-    <input
-      type="email"
-      name="email"
-      placeholder="Enter your email"
-      value={formData.email}
-      onChange={handleChange}
-    />
+        {/* Education */}
+        <h3 className="text-lg font-semibold mt-6">Education</h3>
+        <LabelInputContainer>
+          <Label htmlFor="university">University</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="university"
+            name="university"
+            placeholder="Enter university"
+            value={formData.university}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>Password</label>
-    <input
-      type="password"
-      name="password"
-      placeholder="Enter a secure password"
-      value={formData.password}
-      onChange={handleChange}
-    />
+        <LabelInputContainer>
+          <Label htmlFor="degree">Degree</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="degree"
+            name="degree"
+            placeholder="Enter degree"
+            value={formData.degree}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>Phone Number</label>
-    <input
-      type="text"
-      name="phone"
-      placeholder="Enter phone number"
-      value={formData.phone}
-      onChange={handleChange}
-    />
-  </div>
+        <LabelInputContainer>
+          <Label htmlFor="branch">Branch</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="branch"
+            name="branch"
+            placeholder="Enter branch"
+            value={formData.branch}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-  {/* Education */}
-  <div className="form-section">
-    <h3>Education</h3>
+        <LabelInputContainer>
+          <Label htmlFor="yearOfStudy">Year of Study</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="yearOfStudy"
+            name="yearOfStudy"
+            type="number"
+            min="1"
+            max="5"
+            placeholder="Enter your year (1–5)"
+            value={formData.yearOfStudy}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>University</label>
-    <input
-      type="text"
-      name="university"
-      placeholder="Enter university"
-      value={formData.university}
-      onChange={handleChange}
-    />
+        <LabelInputContainer>
+          <Label htmlFor="cgpa">CGPA</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="cgpa"
+            name="cgpa"
+            type="number"
+            step="0.01"
+            min="0"
+            max="10"
+            placeholder="Enter your CGPA (0–10)"
+            value={formData.cgpa}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>Degree</label>
-    <input
-      type="text"
-      name="degree"
-      placeholder="Enter degree"
-      value={formData.degree}
-      onChange={handleChange}
-    />
+        {/* Skills */}
+        <LabelInputContainer>
+          <Label htmlFor="skills">Skills</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="skills"
+            name="skills"
+            placeholder="e.g. React, Node.js, Python"
+            value={formData.skills.join(", ")}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                skills: e.target.value.split(",").map((s) => s.trim()),
+              })
+            }
+          />
+        </LabelInputContainer>
 
-    <label>Branch</label>
-    <input
-      type="text"
-      name="branch"
-      placeholder="Enter branch"
-      value={formData.branch}
-      onChange={handleChange}
-    />
+        {/* Projects */}
+        <Project formData={data} setFormData={setData} />
 
-    <label>Year of Study</label>
-    <input
-      type="number"
-      name="yearOfStudy"
-      placeholder="1 - 5"
-      value={formData.yearOfStudy}
-      onChange={handleChange}
-      min="1"
-      max="5"
-    />
+        {/* Uploads */}
+        <h3 className="text-lg font-semibold mt-6">Uploads</h3>
+        <LabelInputContainer>
+          <Label>Profile Picture</Label>
+          <Input id="profile" type="file" className="dark:text-neutral-400" />
+        </LabelInputContainer>
+        <LabelInputContainer>
+          <Label>Resume</Label>
+          <Input id="resume" type="file" className="dark:text-neutral-400" />
+        </LabelInputContainer>
 
-    <label>CGPA</label>
-    <input
-      type="number"
-      name="cgpa"
-      placeholder="Enter CGPA"
-      value={formData.cgpa}
-      onChange={handleChange}
-      min="0"
-      max="10"
-    />
-  </div>
+        {/* Social Links */}
+        <h3 className="text-lg font-semibold mt-6">Social Links</h3>
+        <LabelInputContainer>
+          <Label htmlFor="linkedIn">LinkedIn</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="linkedIn"
+            name="linkedIn"
+            placeholder="Enter LinkedIn URL"
+            value={formData.linkedIn}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
- 
-  <div className="form-section">
-    <h3>Skills & Projects</h3>
+        <LabelInputContainer>
+          <Label htmlFor="github">GitHub</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="github"
+            name="github"
+            placeholder="Enter GitHub URL"
+            value={formData.github}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <label>Skills</label>
-    <input
-      type="text"
-      name="skills"
-      placeholder="e.g. Java, Python, React"
-      value={formData.skills}
-      onChange={(e) =>
-        setFormData((prev) => ({
-          ...prev,
-          skills: e.target.value.split(",").map((s) => s.trim()),
-        }))
-      }
-    />
+        <LabelInputContainer>
+          <Label htmlFor="portfolio">Portfolio</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="portfolio"
+            name="portfolio"
+            placeholder="Enter portfolio URL"
+            value={formData.portfolio}
+            onChange={handleChange}
+          />
+        </LabelInputContainer>
 
-    <Project formData={data} setFormData={setData} />
-  </div>
+        <LabelInputContainer>
+          <Label htmlFor="prefferedDomain">Preferred Domains</Label>
+          <Input
+            className="dark:text-neutral-500"
+            id="prefferedDomain"
+            name="prefferedDomain"
+            placeholder="e.g. AI, Web Dev, Cloud"
+            value={formData.prefferedDomain.join(", ")}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                prefferedDomain: e.target.value.split(",").map((d) => d.trim()),
+              })
+            }
+          />
+        </LabelInputContainer>
 
-  {/* Uploads */}
-  <div className="form-section">
-    <h3>Uploads</h3>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
-    <label>Profile Picture</label>
-    <input type="file" name="profilePic" id="profile" />
-
-    <label>Resume(in jpg, jpeg, png, webp format only)</label>
-    <input type="file" name="resume" id="resume"/>
-  </div>
-
-  {/* Social Links */}
-  <div className="form-section">
-    <h3>Social Links</h3>
-
-    <label>LinkedIn</label>
-    <input
-      type="text"
-      name="linkedIn"
-      placeholder="Enter LinkedIn profile"
-      value={formData.linkedIn}
-      onChange={handleChange}
-    />
-
-    <label>GitHub</label>
-    <input
-      type="text"
-      name="github"
-      placeholder="Enter GitHub profile"
-      value={formData.github}
-      onChange={handleChange}
-    />
-
-    <label>Portfolio</label>
-    <input
-      type="text"
-      name="portfolio"
-      placeholder="Enter portfolio link"
-      value={formData.portfolio}
-      onChange={handleChange}
-    />
-
-    <label>Preferred Domains</label>
-    <input
-      type="text"
-      name="prefferedDomain"
-      placeholder="e.g. AI, Web Dev, Cloud"
-      value={formData.prefferedDomain}
-      onChange={(e) =>
-        setFormData((prev) => ({
-          ...prev,
-          prefferedDomain: e.target.value.split(",").map((d) => d.trim()),
-        }))
-      }
-    />
-  </div>
-
-
-  <button type="submit">Register</button>
-</form>
-
-
-    </>
+        {/* Submit Button */}
+        <button
+          className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-blue-600 to-blue-800 font-medium text-white shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-900 transition"
+          type="submit"
+        >
+          Register →
+          <BottomGradient />
+        </button>
+      </form>
+    </div>
   );
 }
 
-export default App;
+const BottomGradient = () => (
+  <>
+    <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
+    <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
+  </>
+);
+
+const LabelInputContainer = ({ children, className }) => (
+  <div className={cn("flex w-full flex-col space-y-2", className)}>
+    {children}
+  </div>
+);

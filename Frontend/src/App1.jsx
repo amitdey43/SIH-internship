@@ -11,7 +11,7 @@ import { Mentordashboard } from "./component/Mentordashboard";
 import {Hrdashboard} from "./component/Hrdashboard"
 import { Forgotpassword } from "./component/Forgotpassword";
 import { Resetforgotpassword } from "./component/Resetpassword";
-import { Home } from "./component/Home";
+import { Home } from "./pages/Home";
 import { InternshipsList } from "./component/Internshipdashboard";
 import InternshipDetails from "./component/Singleintern";
 import Internapply from "./component/Internapply";
