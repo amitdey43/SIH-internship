@@ -296,7 +296,18 @@ useEffect(() => {
     });
 }, []);
 
-
+let handleAccept = (userid,mentorid)=>{
+  axios.put("http://localhost:8000/app/mentor/acceptrequest",{
+    userid,
+    mentorid
+  },{
+    withCredentials:true
+  }).then(()=>{
+    alert("Accept request successfully");
+  }).catch(()=>{
+    alert("Internal Issue")
+  })
+}
  let av = mu.length > 0 
   ? (mu.reduce((n, m) => n + (m.rate || 0), 0) / mu.length).toFixed(1) 
   : "0.0";
@@ -399,9 +410,9 @@ useEffect(() => {
                       <td>{use.status}</td>
                       <td>
                         {use.status === "pending" ? (
-                          <button className="action-button">Accept request</button>
+                          <button className="action-button" onClick={()=>handleAccept(use.user._id,use.mentor)}>Accept request</button>
                         ) : (
-                          <button className="action-button">Guide Student</button>
+                          <button className="action-button" style={{backgroundColor:"green"}}>Guide Student</button>
                         )}
                       </td>
                       <td>

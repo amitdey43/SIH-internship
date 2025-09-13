@@ -158,7 +158,8 @@ const AIGenerator = () => {
 
     return (
         <section id="generator" className="section">
-            <div className="container" style={{height:"100vh", marginTop:"70px"}}>
+            <div className="container" style={{
+                maxHeight:"1000px", marginTop:"70px"}}>
                 <div className="section-header">
                     <a
                         href="#generator"
@@ -179,6 +180,7 @@ const AIGenerator = () => {
                     <textarea
                         rows="3"
                         value={idea}
+                        style={{color:"black"}}
                         onChange={(e) => setIdea(e.target.value)}
                         placeholder="e.g., A subscription box for eco-friendly cleaning products"
                     />
@@ -448,7 +450,7 @@ const Chatbot = () => {
                 </div>
                 <div className="chat-footer">
                     <input
-                        style={{height:"100%"}}
+                        style={{height:"100%",color:"black"}}
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}

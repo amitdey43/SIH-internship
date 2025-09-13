@@ -141,3 +141,20 @@ export const logoutMentor = asyncHandler(async (req, res, next) => {
     message: "Logged out successfully",
   });
 });
+
+export const acceptRequest= asyncHandler(async(req,res,next)=>{
+  let {userid,mentorid}= req.body;
+  let user= await userModel.findById(userid);
+  let mentor= await mentorModel.findById(mentorid);
+  let mu= await muModel.findOneAndUpdate({
+    user:userid,
+    mentor:mentorid
+  },{status:"active"},{new:true});
+  mentor.activechat.push(userid);
+  await mentor.save({validateBeforeSave:false});
+  res.status(200).json({
+    success:true,
+    mentor,
+    mu
+  })
+})

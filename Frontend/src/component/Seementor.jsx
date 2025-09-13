@@ -244,7 +244,11 @@ const MentorCard = ({ mentor,user }) => {
             </span> */}
         </div>
       </div>
-     {user?.mentorAssigned?(user?.mentorAssigned?.toString()=== mentor?._id?.toString()?(<button>Request sent</button>):(<button>You can assign only one mentor</button>)):(<button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button>)}
+     {user?.mentorAssigned?(user?.mentorAssigned?.toString()=== mentor?._id?.toString()?(<button   style={{
+        backgroundColor: mentor.activechat.includes(user._id)
+          ? "green"
+          : "orange",
+      }} >{mentor.activechat.includes(user._id)?"Start Chat":"Request sent"}</button>):(<button>You can assign only one mentor</button>)):(<button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button>)}
       
       {/* <button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button> */}
     </div>
@@ -293,6 +297,7 @@ export const Seementor= function() {
         <div className="search-bar">
             <input 
                 type="text"
+                style={{color:"white"}}
                 placeholder="Search by name or expertise (e.g., 'Rohan' or 'Data Science')"
                 className="search-input"
                 value={searchTerm}
