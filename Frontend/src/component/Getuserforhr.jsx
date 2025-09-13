@@ -13,7 +13,7 @@ const styles = `
     margin: 0;
   }
 
-  .profile-container {
+  .profile-containerr {
     max-width: 1000px;
     margin: 40px auto;
     padding: 30px;
@@ -21,6 +21,10 @@ const styles = `
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 77, 153, 0.1);
     border: 1px solid #e0e0e0;
+    display:flex;
+    flex-direction:column;
+    justify-content: flex-start;
+
   }
 
   /* Header Section */
@@ -57,6 +61,7 @@ const styles = `
   /* General Section Styling */
   .section {
     margin-bottom: 30px;
+    padding:0
   }
   
   .section-title {
@@ -239,7 +244,7 @@ const UserProfileForHR = () => {
   return (
     <>
       <style>{styles}</style>
-      <div className="profile-container">
+      <div className="profile-containerr">
         
         <header className="profile-header">
           <img src={user.profilePic} alt={`${user.name}'s profile`} className="profile-pic" />

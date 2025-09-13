@@ -16,6 +16,18 @@ export const Hrdashboard = function () {
   const [uh,setUh]= useState("");
   let navigate= useNavigate();
 
+     let logout= function(){
+
+        axios.get("http://localhost:8000/app/hr/logout",{
+            withCredentials:true
+        }).then((res)=>{alert(res.data?.message);
+            navigate("/");
+        })
+        .catch(()=>{
+            alert("There is problem to logout");
+        })
+    }
+
 useEffect(() => {
   axios.get("http://localhost:8000/app/hr/hrdetails", {
     withCredentials: true,
@@ -60,7 +72,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{fontWeight:"600", fontSize:"1.5rem"}}>
       {/* Header */}
       <header className="header">
         <h1>Internship Recommendation - HR Dashboard</h1>
@@ -95,6 +107,12 @@ useEffect(() => {
           <button onClick={() => setActiveTab("settings")} className={activeTab === "settings" ? "active" : ""}>
             ⚙️ Settings
           </button>
+          <div className="sidebar-footer">
+                       <button onClick={logout}>Log Out</button>
+            </div>
+             <div className="sidebar-footer">
+                       <button onClick={()=>navigate("/")}>Home Page</button>
+                    </div>
         </nav>
       </aside>
 
@@ -153,74 +171,172 @@ useEffect(() => {
         )}
 
         {activeTab === "candidates" && (
-          <div>
-            <h2>👥 Candidates</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Applied For</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {uh?.map((intern,index)=>
-                  <tr key={index}>
-                    <td>{intern?.user?.name}</td>
-                    <td>{intern?.internship?.title}</td>
-                    <td>{intern?.status}</td>
-                    <td><button onClick={()=>navigate(`/user/details/${intern?.user?._id}/${intern?.internship?._id}`)}>See Details</button></td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+              <div style={{
+                background: "#ffffff",
+                padding: "20px",
+                borderRadius: "12px",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+                margin: "20px auto",
+                maxWidth: "900px",
+                fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+              }}>
+                <h2 style={{
+                  textAlign: "center",
+                  marginBottom: "20px",
+                  fontSize: "24px",
+                  color: "#4f46e5"
+                }}>👥 Candidates</h2>
+
+                <table style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
+                }}>
+                  <thead style={{ background: "#4f46e5", color: "#fff" }}>
+                    <tr>
+                      <th style={{ padding: "12px", textAlign: "left" }}>Name</th>
+                      <th style={{ padding: "12px", textAlign: "left" }}>Applied For</th>
+                      <th style={{ padding: "12px", textAlign: "left" }}>Status</th>
+                      <th style={{ padding: "12px", textAlign: "left" }}>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{color:"black"}}>
+                    {uh?.map((intern,index)=>
+                      <tr key={index} style={{
+                        background: index % 2 === 0 ? "#f9fafb" : "#ffffff",
+                        transition: "background 0.3s"
+                      }}>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #e5e7eb" }}>{intern?.user?.name}</td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #e5e7eb" }}>{intern?.internship?.title}</td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #e5e7eb" }}>{intern?.status}</td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #e5e7eb" }}>
+                          <button 
+                            onClick={()=>navigate(`/user/details/${intern?.user?._id}/${intern?.internship?._id}`)}
+                            style={{
+                              background: "#4f46e5",
+                              color: "white",
+                              padding: "8px 14px",
+                              border: "none",
+                              borderRadius: "8px",
+                              cursor: "pointer",
+                              fontWeight: "600",
+                              transition: "all 0.3s ease"
+                            }}
+                            onMouseOver={e => e.currentTarget.style.background = "#4338ca"}
+                            onMouseOut={e => e.currentTarget.style.background = "#4f46e5"}
+                          >
+                            See Details
+                          </button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
         )}
 
-        {activeTab === "notifications" && (
-          <div>
-            <h2>🔔 Notifications</h2>
-            <ul className="notifications">
-              <li>New candidate applied for Backend Intern</li>
-              <li>HR round scheduled for Amit Kumar</li>
-              <li>Reminder: Final interviews tomorrow</li>
-            </ul>
-          </div>
-        )}
+                  {activeTab === "notifications" && (
+                    <div style={{color:"black"}}>
+                      <h2>🔔 Notifications</h2>
+                      <ul className="notifications">
+                        <li>New candidate applied for Backend Intern</li>
+                        <li>HR round scheduled for Amit Kumar</li>
+                        <li>Reminder: Final interviews tomorrow</li>
+                      </ul>
+                    </div>
+                  )}
 
-        {activeTab === "createInternship" && (
-               <CreateInternship/>
-        )}
+                  {activeTab === "createInternship" && (
+                        <CreateInternship/>
+                  )}
 
-        {activeTab === "interviews" && (
-          <div>
-            <h2>📅 Shortlisted Candidate</h2>
-            <ul>
-              {Hr?.shortlistedCandidates?.map((candidate,index)=>(
-                  <li key={index}>Shedule time for {candidate.name} 
-                    <button>Shedule Time</button>
-                  </li>
-              ))}
-            </ul>
-          </div>
-        )}
+                  {activeTab === "interviews" && (
+                    <div style={{
+                      background: "#ffffff",
+                      padding: "20px",
+                      borderRadius: "12px",
+                      boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+                      margin: "20px auto",
+                      maxWidth: "700px",
+                      fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+                    }}>
+                      <h2 style={{
+                        textAlign: "center",
+                        marginBottom: "20px",
+                        fontSize: "22px",
+                        color: "#16a34a"
+                      }}>📅 Shortlisted Candidate</h2>
 
-        {activeTab === "internships" && (
-          <Internships uh={uh} hr={Hr}/>
-        )}
+                      <ul style={{
+                        listStyle: "none",
+                        padding: "0",
+                        margin: "0"
+                      }}>
+                        {Hr?.shortlistedCandidates?.map((candidate,index)=>(
+                          <li key={index} style={{
+                            background: index % 2 === 0 ? "#f9fafb" : "#ffffff",
+                            padding: "15px",
+                            marginBottom: "12px",
+                            borderRadius: "8px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            border: "1px solid #e5e7eb",
+                            transition: "transform 0.2s, box-shadow 0.2s"
+                          }}
+                          onMouseOver={e => {
+                            e.currentTarget.style.transform = "scale(1.02)";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+                          }}
+                          onMouseOut={e => {
+                            e.currentTarget.style.transform = "scale(1)";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                          >
+                            <span style={{ fontSize: "16px", fontWeight: "500", color: "#374151" }}>
+                              Schedule time for <strong style={{color:"#2563eb"}}>{candidate.name}</strong>
+                            </span>
+                            <button style={{
+                              background: "#2563eb",
+                              color: "white",
+                              padding: "8px 14px",
+                              border: "none",
+                              borderRadius: "8px",
+                              cursor: "pointer",
+                              fontWeight: "600",
+                              transition: "all 0.3s ease"
+                            }}
+                            onMouseOver={e => e.currentTarget.style.background = "#1d4ed8"}
+                            onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
+                            >
+                              Schedule Time
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-        {activeTab === "settings" && (
-          <div>
-            <h2>⚙️ Settings</h2>
-            <form className="settings-form">
-              <input type="text" placeholder="HR Name" />
-              <input type="email" placeholder="Email" />
-              <input type="password" placeholder="Change Password" />
-              <button type="submit">Save Changes</button>
-            </form>
-          </div>
-        )}
-      </main>
-    </div>
-  );
-};
+                  )}
+
+                  {activeTab === "internships" && (
+                    <Internships uh={uh} hr={Hr}/>
+                  )}
+
+                  {activeTab === "settings" && (
+                    <div>
+                      <h2>⚙️ Settings</h2>
+                      <form className="settings-form">
+                        <input type="text" placeholder="HR Name" />
+                        <input type="email" placeholder="Email" />
+                        <input type="password" placeholder="Change Password" />
+                        <button type="submit">Save Changes</button>
+                      </form>
+                    </div>
+                  )}
+                </main>
+              </div>
+            );
+          };

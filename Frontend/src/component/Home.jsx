@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatedTooltipPreview } from './AnimatedTooltipPreview';
+import { MovingBorder } from '../../components/ui/moving-border';
 
 // A component to inject all the necessary CSS into the document's head.
 
@@ -42,7 +44,7 @@ const Header = ()=>{
         <header className="headerr">
             <nav className="container">
                 <div className="nav-content">
-                    <div className="logo">YourLogo</div>
+                    <div className="logo" style={{padding:"0"}}>Hire-n-Higher</div>
                     <div className="nav-links">
                         <a href="#features">Features</a>
                         <a href="#generator">AI Generator</a>
@@ -56,14 +58,14 @@ const Header = ()=>{
                         </button>
                         
                     ) : (
-                        <>
-                        <button className="btn" onClick={() => navigate(`/${role==="Student"?"user":role.toLowerCase()}/dashboard`)}>
+                        <div style={{display:"flex", gap:"1rem"}}>
+                        <button className="btn" onClick={() => navigate(`/${role==="Student"?"user":role.toLowerCase()}/dashboard`)} style={{width:"100%"}}>
                         Dashboard
                         </button>
-                        <button className="btn" onClick={() => navigate(`/internships`)}>
+                        <button className="btn" onClick={() => navigate(`/internships`)} style={{width:"100%"}}>
                         Internships
                         </button>
-                        </>
+                        </div>
                     )
                     }
                 </div>
@@ -74,13 +76,30 @@ const Header = ()=>{
 };
 
 const Hero = () => (
+    
     <section className="hero">
-        <div className="container">
-            <h1>Build Your Next Idea Faster</h1>
-            <p>A simple, elegant, and powerful starting point for your next project. Use our AI to generate ideas and get started instantly.</p>
-            <a href="#generator" className="btn btn-large">
-                Try The AI Generator
-            </a>
+        <MovingBorder />
+        <div className="container" style={{marginTop:"20px"}}>
+            <h1>Search, Apply & Get your 
+                <br />
+                <span>Dream Internship</span></h1>
+<p
+  style={{
+    fontSize: "1.1rem",
+    fontWeight: 500,
+    lineHeight: "1.6",
+    textAlign: "center",
+    background: "linear-gradient(90deg, #FF9933, #454198ff, #138808)",
+    WebkitBackgroundClip: "text",
+    color: "transparent",
+  }}
+>
+  Our AI-powered engine match your education, skills and interests with the best <br />
+  internships. Simple, fast and fully personalized - built to help you grow.
+</p>
+            <div style={{display:"flex", flexDirection:"column"}}>
+                <AnimatedTooltipPreview /> <p style={{marginTop:"-15px"}}>so many people have connected with us!</p>
+            </div>
         </div>
     </section>
 );
@@ -139,10 +158,22 @@ const AIGenerator = () => {
 
     return (
         <section id="generator" className="section">
-            <div className="container">
+            <div className="container" style={{height:"100vh", marginTop:"70px"}}>
                 <div className="section-header">
+                    <a
+                        href="#generator"
+                        style={{
+                            fontSize: "40px",
+                            fontWeight: 1000, // not "100px"
+                            textDecoration: "none",
+                            color: "#ffffffff",
+                        }}
+                        >
+                        Try The AI Generator
+                    </a>
+
                     <h2>Generate Your Next Big Idea ✨</h2>
-                    <p>Describe your business concept and let our AI create a name, tagline, and key features for you.</p>
+                    <p style={{color:"#ffffffaa"}}>Describe your business concept and let our AI create a name, tagline, and key features for you.</p>
                 </div>
                 <div className="generator-card">
                     <textarea
@@ -213,19 +244,124 @@ const Features = () => (
 );
 
 const Footer = () => (
-    <footer className="footer">
-        <div className="container">
-            <div className="footer-content">
-                <p>&copy; 2025 YourCompany. All rights reserved.</p>
-                <div className="footer-links">
-                    <a href="#">Facebook</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Instagram</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+  <footer
+    style={{
+      background: "linear-gradient(135deg, #1f2937, #111827)", // modern dark gradient
+      color: "#f9fafb",
+      padding: "3rem 1rem",
+      marginTop: "3rem",
+      borderTop: "1px solid #374151",
+    }}
+  >
+    <div
+      style={{
+        maxWidth: "1200px",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "1.5rem",
+        textAlign: "center",
+      }}
+    >
+      {/* Website Name */}
+      <h2
+        style={{
+          fontSize: "2rem",
+          fontWeight: "800",
+          margin: 0,
+          background: "linear-gradient(90deg, #06b6d4, #757f90ff )", // blue to cyan
+          WebkitBackgroundClip: "text",
+          color: "transparent",
+        }}
+      >
+        Hire-n-Higher
+      </h2>
+
+      {/* Tagline */}
+      <p
+        style={{
+          fontSize: "1.1rem",
+          color: "#d1d5db",
+          margin: 0,
+          maxWidth: "500px",
+        }}
+      >
+        🚀 No.1 Internship Recommendation Website – Find your perfect career start, faster than ever!
+      </p>
+
+      {/* Social Links with icons */}
+      <div
+        style={{
+          display: "flex",
+          gap: "2rem",
+          marginTop: "1rem",
+        }}
+      >
+        <a
+          href="#"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "#f9fafb",
+            textDecoration: "none",
+            fontWeight: 500,
+            transition: "all 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.target.style.color = "#3b82f6")}
+          onMouseOut={(e) => (e.target.style.color = "#f9fafb")}
+        >
+          <span style={{ fontSize: "20px" }}>🌐</span> Facebook
+        </a>
+        <a
+          href="#"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "#f9fafb",
+            textDecoration: "none",
+            fontWeight: 500,
+            transition: "all 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.target.style.color = "#3b82f6")}
+          onMouseOut={(e) => (e.target.style.color = "#f9fafb")}
+        >
+          <span style={{ fontSize: "20px" }}>🐦</span> Twitter
+        </a>
+        <a
+          href="#"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            color: "#f9fafb",
+            textDecoration: "none",
+            fontWeight: 500,
+            transition: "all 0.3s ease",
+          }}
+          onMouseOver={(e) => (e.target.style.color = "#3b82f6")}
+          onMouseOut={(e) => (e.target.style.color = "#f9fafb")}
+        >
+          <span style={{ fontSize: "20px" }}>📸</span> Instagram
+        </a>
+      </div>
+
+      {/* Copyright */}
+      <p
+        style={{
+          fontSize: "0.9rem",
+          color: "#9ca3af",
+          marginTop: "1.5rem",
+        }}
+      >
+        &copy; 2025 <span style={{ fontWeight: 600 }}>Hire-n-Higher</span>. All rights reserved.
+      </p>
+    </div>
+  </footer>
 );
+
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -292,7 +428,7 @@ const Chatbot = () => {
         <div className="chat-widget">
              <div className={`chat-window ${isOpen ? '' : 'closed'}`}>
                 <div className="chat-header">
-                    <h3>Internship Assistant</h3>
+                    <h3 style={{width:"500%"}}>Internship Assistant</h3>
                     <button onClick={() => setIsOpen(false)} className="close-btn">&times;</button>
                 </div>
                 <div className="chat-body">
@@ -312,13 +448,14 @@ const Chatbot = () => {
                 </div>
                 <div className="chat-footer">
                     <input
+                        style={{height:"100%"}}
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                         placeholder="Ask a question..."
                     />
-                    <button onClick={handleSendMessage}>Send</button>
+                    <button onClick={handleSendMessage} style={{width:"100px"}}>Send</button>
                 </div>
             </div>
             <button onClick={() => setIsOpen(true)} className={`chat-open-btn ${isOpen ? 'closed' : ''}`}>

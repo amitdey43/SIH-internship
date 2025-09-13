@@ -429,7 +429,7 @@ const InternshipDetails = ({ internship = sampleInternship }) => {
               <span className="detail-icon">⏳</span>
               <div>
                 <p className="label">Duration</p>
-                <p className="value">{formdata.duration}</p>
+                <p className="value">{formdata.duration} months</p>
               </div>
             </div>
           </section>

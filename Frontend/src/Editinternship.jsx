@@ -204,9 +204,9 @@ useEffect(() => {
               <input type="text" placeholder="Type skill and click 'Add'" value={skillInput} onChange={(e) => setSkillInput(e.target.value)} />
               <button onClick={handleAddSkill}>+ Add</button>
             </div>
-            <div className="skill-list">
+            <div className="skill-list" style={{display:"flex"}}>
               {formData.skills.map((skill, idx) => (
-                <span className="skill-item" key={idx}>
+                <span className="skill-item" key={idx} style={{display:"flex", color:"black"}}>
                   {skill}{" "}
                   <button className="remove" onClick={() => handleRemoveSkill(skill)}>✖</button>
                 </span>

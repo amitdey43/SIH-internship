@@ -284,3 +284,16 @@ export const updateInternship= asyncHandler(async(req,res,next)=>{
 //     applyUsers
 //   })
 // })
+export const logoutHr = asyncHandler(async (req, res, next) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});

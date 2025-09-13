@@ -244,7 +244,8 @@ const MentorCard = ({ mentor,user }) => {
             </span> */}
         </div>
       </div>
-      {user?.mentorAssigned?.toString()=== mentor?._id?.toString()?(<button>Request sent</button>):(<button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button>)}
+     {user?.mentorAssigned?(user?.mentorAssigned?.toString()=== mentor?._id?.toString()?(<button>Request sent</button>):(<button>You can assign only one mentor</button>)):(<button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button>)}
+      
       {/* <button onClick={()=>addHandle(mentor._id,user._id)}>Request to Add</button> */}
     </div>
   );

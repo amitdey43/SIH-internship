@@ -35,7 +35,7 @@ export const Internships = ({uh,Hr}) => {
   if (loading) return <p className="loading">⏳ Loading internships...</p>;
 
   return (
-    <div className="internship-list">
+    <div className="internship-list" style={{display:"flex", flexDirection:"column"}}>
       <h2 className="title">📋 Created Internships</h2>
       {internships.length === 0 ? (
         <p className="no-data">No internships created yet.</p>

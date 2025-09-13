@@ -265,7 +265,7 @@ const DashboardPage = ({user,setUser}) => {
                             <p style={{fontWeight: '600'}}>{intern.internship.title}</p>
                             <p style={{color: 'var(--gray-500)', fontSize: '0.875rem'}}>{intern.internship.companyname || "TATA Steal"}</p>
                         </div>
-                        <p style={{color: 'var(--gray-500)'}}>{intern.internship.duration || "0 months"}</p>
+                        <p style={{color: 'var(--gray-500)'}}>{(intern.internship.duration || "0")+" months"}</p>
                         <span className="status pending">{intern.status}</span>
                     </li>
                 ))}
@@ -279,32 +279,92 @@ const DashboardPage = ({user,setUser}) => {
 };
 
 const MyApplicationsPage = ({user,setUser}) => {
-    let navigate= useNavigate();
-    return(
-    <div className="dashboard-section">
-        <h2>All Applications</h2>
-        <table className="application-table" style={{width: '100%'}}>
-            <thead>
-                <tr style={{textAlign: 'left', color: 'var(--gray-500)', fontWeight: 500}}>
-                    <th>Role</th>
-                    <th>Company</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {user?.appliedInterships?.map((intern)=>(
-                   
-                <tr key={intern.internship._id}>
-                    <td>{intern.internship.title}</td>
-                    <td>{intern.internship.companyname || "TATA Steal"}</td>
-                    <td><span className="status pending">{intern.status}</span></td>
-                    <td><button onClick={()=>navigate(`/intership/details/${intern.internship._id}`)} >View details</button></td>
-                </tr>
-                ))}
-             
-            </tbody>
-        </table>
-    </div>);
+let navigate = useNavigate();
+return (
+  <div style={{
+    background: "#ffffff",
+    padding: "25px",
+    borderRadius: "12px",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+    margin: "20px auto",
+    maxWidth: "950px",
+    fontFamily: "Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+  }}>
+    <h2 style={{
+      textAlign: "center",
+      marginBottom: "20px",
+      fontSize: "24px",
+      fontWeight: "600",
+      color: "#0f172a"
+    }}>📋 All Applications</h2>
+
+    <table style={{
+      width: "100%",
+      borderCollapse: "collapse",
+      borderRadius: "10px",
+      overflow: "hidden",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
+    }}>
+      <thead style={{ background: "#1e3a8a", color: "#fff" }}>
+        <tr>
+          <th style={{ padding: "14px", textAlign: "left" }}>Role</th>
+          <th style={{ padding: "14px", textAlign: "left" }}>Company</th>
+          <th style={{ padding: "14px", textAlign: "left" }}>Status</th>
+          <th style={{ padding: "14px", textAlign: "left" }}>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {user?.appliedInterships?.map((intern, index) => (
+          <tr key={intern.internship._id} style={{
+            background: index % 2 === 0 ? "#f9fafb" : "#ffffff",
+            transition: "background 0.3s"
+          }}>
+            <td style={{ padding: "14px", borderBottom: "1px solid #e5e7eb" }}>{intern.internship.title}</td>
+            <td style={{ padding: "14px", borderBottom: "1px solid #e5e7eb" }}>
+              {intern.internship.companyname || "TATA Steel"}
+            </td>
+            <td style={{ padding: "14px", borderBottom: "1px solid #e5e7eb" }}>
+              <span style={{
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: "13px",
+                fontWeight: "600",
+                backgroundColor: intern.status === "Selected" ? "#dcfce7"
+                  : intern.status === "Rejected" ? "#fee2e2"
+                  : "#fef9c3",
+                color: intern.status === "Selected" ? "#166534"
+                  : intern.status === "Rejected" ? "#991b1b"
+                  : "#92400e"
+              }}>
+                {intern.status}
+              </span>
+            </td>
+            <td style={{ padding: "14px", borderBottom: "1px solid #e5e7eb" }}>
+              <button
+                onClick={() => navigate(`/intership/details/${intern.internship._id}`)}
+                style={{
+                  background: "#2563eb",
+                  color: "white",
+                  padding: "8px 14px",
+                  border: "none",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "600",
+                  transition: "all 0.3s ease"
+                }}
+                onMouseOver={e => e.currentTarget.style.background = "#1d4ed8"}
+                onMouseOut={e => e.currentTarget.style.background = "#2563eb"}
+              >
+                View Details
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
 };
 
 const ProfilePage = () => {
@@ -539,16 +599,7 @@ const SettingsPage = () => (
                 <span className="slider"></span>
             </label>
         </div>
-        <div className="setting-item">
-             <div>
-                <h3 style={{fontWeight: 600}}>Dark Mode</h3>
-                <p style={{color: 'var(--gray-500)'}}>Toggle between light and dark themes.</p>
-            </div>
-            <label className="toggle-switch">
-                <input type="checkbox" />
-                <span className="slider"></span>
-            </label>
-        </div>
+       
     </div>
 );
 
@@ -611,6 +662,7 @@ export const Userdashboard=  function() {
                     <div className="sidebar-footer">
                        <button onClick={()=>navigate("/seementor")}>See Mentors</button>
                     </div>
+                    <br></br>
                     <div className="sidebar-footer">
                        <button onClick={()=>navigate("/")}>Home Page</button>
                     </div>

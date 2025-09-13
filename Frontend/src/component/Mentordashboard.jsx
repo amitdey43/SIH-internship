@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const UsersIcon = () => (
@@ -93,41 +94,59 @@ const GlobalStyles = () => (
     }
 
     /* Header */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin: 0;
-      color: #2d3748;
-    }
-    .header-actions {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-    .notification-bell {
-        position: relative;
-        cursor: pointer;
-        color: #718096;
-    }
-     .notification-bell:hover {
-        color: #2563eb;
-    }
-    .notification-dot {
-        position: absolute;
-        top: -2px;
-        right: -4px;
-        width: 8px;
-        height: 8px;
-        background-color: #ef4444;
-        border-radius: 50%;
-        border: 1px solid white;
-    }
+.headerrr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #ffffffff, #c9d0dfff); /* modern dark gradient */
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #f8fafc;
+}
+
+.headerrr h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #3b82f6; /* modern blue accent */
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #f8fafc;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.notification-bell:hover {
+  transform: scale(1.1);
+  color: #3b82f6;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444; /* red for notification */
+  border-radius: 50%;
+  border: 2px solid #1e293b; /* border matches background */
+}
+
 
     /* Stats Cards */
     .stats-grid {
@@ -248,12 +267,22 @@ const GlobalStyles = () => (
 
 
 export const Mentordashboard = () => {
-
+  let navigate = useNavigate();
   const [mentor, setMentor] = useState("");
   const [students, setStudents] = useState([]);
   const [mu,setMu]= useState([]);
 
+   let logout= function(){
 
+        axios.get("http://localhost:8000/app/mentor/logout",{
+            withCredentials:true
+        }).then((res)=>{alert(res.data?.message);
+            navigate("/");
+        })
+        .catch(()=>{
+            alert("There is problem to logout");
+        })
+    }
 useEffect(() => {
   axios.get("http://localhost:8000/app/mentor/dashboard", { withCredentials: true })
     .then((res) => {
@@ -282,17 +311,25 @@ useEffect(() => {
              <div className="logo">Mentor</div>
           </div>
           {mentor && (
+            <>
              <div className="profile-card">
                 <img src={mentor.profilePic} alt="Mentor Avatar" className="profile-avatar" />
                 <h3>{mentor.name}</h3>
                 <p>{mentor.organization}</p>
              </div>
+             <div className="sidebar-footer" style={{backgroundColor:"green", borderRadius:"25px"}}>
+                       <button onClick={logout} style={{display:"flex", justifyContent:"center"}}>Log Out</button>
+              </div>
+              <div className="sidebar-footer" style={{backgroundColor:"blue", borderRadius:"25px"}}>
+                       <button onClick={()=>navigate("/")} style={{display:"flex", justifyContent:"center"}}>Home Page</button>
+              </div>
+              </>
           )}
         </aside>
 
         
         <main className="main-content">
-          <header className="header">
+          <header className="headerrr">
             <h1>Dashboard</h1>
             <div className="header-actions">
               <div className="notification-bell">

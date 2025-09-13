@@ -27,8 +27,8 @@ export const Login = function () {
   };
 
   return (
-    <div className="login-container">
-      <form className="login-box" onSubmit={handleSubmit}>
+    <div className="login-container" >
+      <form className="login-box" onSubmit={handleSubmit} style={{width:"100%"}}>
         <h2>Login</h2>
         <input
           required
